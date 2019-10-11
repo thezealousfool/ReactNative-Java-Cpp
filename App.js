@@ -6,14 +6,20 @@ import {
   StatusBar,
   NativeModules,
   Button,
-  Alert,
+  NativeEventEmitter,
 } from 'react-native';
 
 class App extends Component {
   state = {
-    clicks: NativeModules.StateExample.clicks,
+    clicks: NativeModules.ClickStateExample.clicks,
     reactStartTime: 0,
     reactTime: 0,
+  }
+
+  componentDidMount() {
+    new NativeEventEmitter(NativeModules.ClickStateExample).addListener('ValueChange', (event) => {
+      this.setState({ clicks: event.value, reactTime: new Date() - this.state.reactStartTime });
+    })
   }
 
   render() {
@@ -24,9 +30,7 @@ class App extends Component {
           <Text style={styles.text}>Clicked: {this.state.clicks}</Text>
           <Button title="Click" onPress={() => {
             this.setState({ reactStartTime: new Date() });
-            NativeModules.StateExample.whenClicked((value) => {
-            this.setState({ clicks: value, reactTime: new Date() - this.state.reactStartTime });
-          }) }}/>
+            NativeModules.ClickStateExample.whenClicked(); }}/>
           <Text style={ {paddingTop: 10} }>Response time: {this.state.reactTime}ms</Text>
         </SafeAreaView>
       </Fragment>
