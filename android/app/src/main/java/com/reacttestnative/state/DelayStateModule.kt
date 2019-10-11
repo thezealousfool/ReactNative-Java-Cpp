@@ -17,6 +17,7 @@ class DelayStateModule(context: ReactApplicationContext) : ReactContextBaseJavaM
     init {
         System.loadLibrary("native-lib")
         reactContext = context
+        cInit()
     }
 
     override fun getName(): String {
@@ -37,12 +38,15 @@ class DelayStateModule(context: ReactApplicationContext) : ReactContextBaseJavaM
         return if (curValAny is Int) curValAny else 0
     }
 
-    private external fun cDelayChanged(newDelay: Int)
+    private external fun cDelayChanged()
+    private external fun cCppValueChanged()
+    private external fun cInit()
+    private external fun cStartChangingCppValue()
 
     @ReactMethod
     fun whenClicked() {
         startT = Date().time
-        // start C++ value changing
+        cStartChangingCppValue()
     }
 
     @ReactMethod
@@ -61,7 +65,12 @@ class DelayStateModule(context: ReactApplicationContext) : ReactContextBaseJavaM
     }
 
     fun cppValueChanged() {
-
+        cCppValueChanged()
+        val cppValue = getCppValue()
+        val params : WritableMap = Arguments.createMap()
+        params.putInt("value", cppValue)
+        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                .emit("CppValueChange", params)
     }
 
     fun setCppValue(value: Int) {
