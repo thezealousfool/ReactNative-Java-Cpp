@@ -14,11 +14,12 @@ class App extends Component {
     clicks: NativeModules.ClickStateExample.clicks,
     reactStartTime: 0,
     reactTime: 0,
+    cppTime: 0,
   }
 
   componentDidMount() {
     new NativeEventEmitter(NativeModules.ClickStateExample).addListener('ValueChange', (event) => {
-      this.setState({ clicks: event.value, reactTime: new Date() - this.state.reactStartTime });
+      this.setState({ clicks: event.value, reactTime: new Date() - this.state.reactStartTime, cppTime: event.javadur });
     })
   }
 
@@ -31,7 +32,8 @@ class App extends Component {
           <Button title="Click" onPress={() => {
             this.setState({ reactStartTime: new Date() });
             NativeModules.ClickStateExample.whenClicked(); }}/>
-          <Text style={ {paddingTop: 10} }>Response time: {this.state.reactTime}ms</Text>
+          <Text style={ {paddingTop: 10} }>Total Response time: {this.state.reactTime}ms</Text>
+          <Text style={ {paddingTop: 4} }>C++ Response time: {this.state.cppTime}ms</Text>
         </SafeAreaView>
       </Fragment>
     );
