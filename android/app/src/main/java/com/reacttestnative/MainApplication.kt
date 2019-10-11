@@ -8,7 +8,7 @@ import com.facebook.react.ReactPackage
 import com.facebook.soloader.SoLoader
 import java.lang.reflect.InvocationTargetException
 import com.facebook.react.shell.MainReactPackage
-import com.reacttestnative.state.ClickStatePackage
+import com.reacttestnative.state.DelayStatePackage
 
 
 class MainApplication : Application(), ReactApplication {
@@ -21,7 +21,7 @@ class MainApplication : Application(), ReactApplication {
     override fun getPackages(): List<ReactPackage> {
       return listOf(
               MainReactPackage(),
-              ClickStatePackage()
+              DelayStatePackage()
       )
     }
 

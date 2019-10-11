@@ -3,6 +3,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  TextInput,
   StatusBar,
   NativeModules,
   Button,
@@ -11,15 +12,15 @@ import {
 
 class App extends Component {
   state = {
-    clicks: NativeModules.ClickStateExample.clicks,
+    delay: NativeModules.DelayStateExample.delay,
     reactStartTime: 0,
     reactTime: 0,
-    cppTime: 0,
+    cppValue: NativeModules.DelayStateExample.cppValue,
   }
 
   componentDidMount() {
-    new NativeEventEmitter(NativeModules.ClickStateExample).addListener('ValueChange', (event) => {
-      this.setState({ clicks: event.value, reactTime: new Date() - this.state.reactStartTime, cppTime: event.javadur });
+    new NativeEventEmitter(NativeModules.DelayStateExample).addListener('ValueChange', (event) => {
+      this.setState({ delay: event.value, reactTime: new Date() - this.state.reactStartTime });
     })
   }
 
@@ -28,12 +29,16 @@ class App extends Component {
       <Fragment>
         <StatusBar barStyle="dark-content" />
         <SafeAreaView style={styles.container}>
-          <Text style={styles.text}>Clicked: {this.state.clicks}</Text>
+          
           <Button title="Click" onPress={() => {
             this.setState({ reactStartTime: new Date() });
-            NativeModules.ClickStateExample.whenClicked(); }}/>
-          <Text style={ {paddingTop: 10} }>Total Response time: {this.state.reactTime}ms</Text>
-          <Text style={ {paddingTop: 4} }>C++ Response time: {this.state.cppTime}ms</Text>
+            NativeModules.DelayStateExample.whenClicked(); }}/>
+          <Text style={styles.text}>{this.state.cppValue}</Text>
+          <Text style={ {paddingTop: 10, paddingBottom: 10} }>Delay change response time: {this.state.reactTime}ms</Text>
+          <TextInput style={styles.textinp} value={this.state.delay.toString()}
+              onChangeText={(value) => {
+                this.setState({ reactStartTime: new Date() })
+                NativeModules.DelayStateExample.setDelay(parseInt(value))}}></TextInput>
         </SafeAreaView>
       </Fragment>
     );
@@ -51,6 +56,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: "center",
     padding: 20,
+  },
+  textinp: {
+    fontSize: 20,
+    backgroundColor: '#dedede',
+    padding: 20
   }
 })
 

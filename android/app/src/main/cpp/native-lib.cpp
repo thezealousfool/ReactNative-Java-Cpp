@@ -7,16 +7,20 @@
 #include <jni.h>
 #include <iostream>
 
+int delay = 0, cppValue = 0;
+
 extern "C"
-JNIEXPORT void JNICALL Java_com_reacttestnative_state_ClickStateModule_doSomething(JNIEnv * env, jobject obj) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+JNIEXPORT void JNICALL Java_com_reacttestnative_state_ClickStateModule_init(JNIEnv * env, jobject obj) {
+//    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     jclass clickState = env->GetObjectClass(obj);
-    env->CallVoidMethod(obj, env->GetMethodID(clickState, "incrementClick", "()V"));
-//    if (clickState != nullptr) {
-//        jmethodID mid = env->GetMethodID(clickState, "whenClicked", "()V");
-//        if (mid != nullptr) {
-//            env->CallVoidMethod(clickState, mid);
-//        }
-//        std::cout << "Yaaaay" << std::endl;
-//    }
+//    env->CallVoidMethod(obj, env->GetMethodID(clickState, "incrementClick", "()V"));
+    jint val = env->CallIntMethod(obj, env->GetMethodID(clickState, "getDelay", "()I"));
+    delay = (int)val;
+    val = env->CallIntMethod(obj, env->GetMethodID(clickState, "getCppValue", "()I"));
+    cppValue = (int)val;
+}
+
+extern "C"
+JNIEXPORT void JNICALL Java_com_reacttestnative_state_ClickStateModule_cDelayChanged(JNIEnv * env, jobject obj, jint arg) {
+
 }
