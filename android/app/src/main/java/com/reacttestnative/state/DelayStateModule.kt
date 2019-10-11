@@ -61,7 +61,7 @@ class DelayStateModule(context: ReactApplicationContext) : ReactContextBaseJavaM
         params.putInt("value", delay)
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
                 .emit("DelayChanged", params)
-        cDelayChanged(delay)
+        cDelayChanged()
     }
 
     fun cppValueChanged() {
