@@ -34,14 +34,9 @@ JNIEXPORT void JNICALL Java_com_reacttestnative_state_ClickStateModule_cCppValue
     cppValue = (int)val;
 }
 
-extern "C"
-JNIEXPORT void JNICALL Java_com_reacttestnative_state_ClickStateModule_cStartChangingCppValue(JNIEnv * env, jobject obj) {
-    timer_start(100, updateCppValue, env, obj);
-}
-
 void timer_start(unsigned int interval, std::function<void(JNIEnv*, jobject)> func, JNIEnv *env, jobject obj)
 {
-    std::thread([func, interval]() {
+    std::thread([&]() {
         while (true)
         {
             func(env, obj);
@@ -54,4 +49,9 @@ void timer_start(unsigned int interval, std::function<void(JNIEnv*, jobject)> fu
 void updateCppValue(JNIEnv * env, jobject obj) {
     jclass clickState = env->GetObjectClass(obj);
     env->CallVoidMethod(obj, env->GetMethodID(clickState, "getCppValue", "(I)V"), (jint)(cppValue+1));
+}
+
+extern "C"
+JNIEXPORT void JNICALL Java_com_reacttestnative_state_ClickStateModule_cStartChangingCppValue(JNIEnv * env, jobject obj) {
+    timer_start(100, updateCppValue, env, obj);
 }
