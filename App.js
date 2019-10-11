@@ -11,20 +11,23 @@ import {
 
 class App extends Component {
   state = {
-    clicks: NativeModules.StateExample.clicks
+    clicks: NativeModules.StateExample.clicks,
+    reactStartTime: 0,
+    reactTime: 0,
   }
 
   render() {
-    console.log("vvk::", NativeModules);
     return (
       <Fragment>
         <StatusBar barStyle="dark-content" />
         <SafeAreaView style={styles.container}>
           <Text style={styles.text}>Clicked: {this.state.clicks}</Text>
-          <Button title="Click" onPress={() => { NativeModules.StateExample.whenClicked((value) => {
-            this.setState({ clicks: value });
-            // Alert.alert('Clicked', 'Button clicked: '+value)
+          <Button title="Click" onPress={() => {
+            this.setState({ reactStartTime: new Date() });
+            NativeModules.StateExample.whenClicked((value) => {
+            this.setState({ clicks: value, reactTime: new Date() - this.state.reactStartTime });
           }) }}/>
+          <Text style={ {paddingTop: 10} }>Response time: {this.state.reactTime}ms</Text>
         </SafeAreaView>
       </Fragment>
     );
